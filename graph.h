@@ -12,23 +12,32 @@ using namespace std;
 
 //#define VERTEX_QTT 5
 
+//Helper for organize structures to getSubGraphsList flow
+//SGFH ---> Sub Graph Flow Helper
+struct sgfh {
+    Vertex* lastVertex;
+    vector<Vertex*>* lastGraph;
+};
+
 class Graph
 {
 public:
     int VERTEX_QTT;
     Vertex *list;
+    vector<vector<Vertex*>*> subGraphs;
+    void defaultConstructor(bool, int);
 public:
     Graph();
     Graph(int);
-    Graph(bool, int);
     int randd();
-    bool isEmpty();
     Vertex *availableVertex();
     Vertex *availableVertex(int);
     bool insertEdge(int, int);
     bool insertEdge(int, int, int);
-    void colorize(Vertex*);
-    void connectAll(int, Vertex*, Vertex*);
+    vector<Vertex*>* colorize(Vertex*);
+    vector<Vertex*>* colorize(Vertex*, vector<Vertex*>*);
+    void getSubGraphsList(int, sgfh*);
+    void connectAll(int, Vertex*, Vertex*, vector<int>*);
     void whitise();
 
     Vertex* test();

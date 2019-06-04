@@ -2,25 +2,24 @@
 
 Vertex::Vertex()
 {
-    this->key = -1;
-    this->color = WHITE;
-    this->neighbor = 0;
-    this->edgeWeight = 100;
+    defaultConstructor(-1, 0);
 }
 
 Vertex::Vertex(int key)
 {
-    this->key = key;
-    this->color = WHITE;
-    this->neighbor = neighbor;
-    this->edgeWeight = 100;
+    defaultConstructor(key, 0);
 }
 
 Vertex::Vertex(Vertex *neighbor)
 {
-    this->key = -1;
-    this->color = WHITE;
+    defaultConstructor(-1, neighbor);
+}
+
+void Vertex::defaultConstructor(int key, Vertex* neighbor){
+    this->key = key < 0 ? -1 : key;
+
     this->neighbor = neighbor;
+    this->color = WHITE;
     this->edgeWeight = 100;
 }
 

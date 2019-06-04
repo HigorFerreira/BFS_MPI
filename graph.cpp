@@ -1,15 +1,15 @@
 #include "graph.h"
 
 Graph::Graph(){
-    Graph(true, 0);
+    defaultConstructor(true, 0);
 }
 
 Graph::Graph(int qtt){
-    Graph(false, qtt);
+    defaultConstructor(false, qtt);
 }
 
-Graph::Graph(bool isRandomic, int qtt)
-{
+void Graph::defaultConstructor(bool isRandomic, int qtt){
+
     srand(time(NULL));
 
     this->VERTEX_QTT = qtt < 1 ? 65000 : qtt;
@@ -33,10 +33,6 @@ int Graph::randd(){
     return rand() % VERTEX_QTT;
 }
 
-bool Graph::isEmpty(){
-    return 0;
-}
-
 Vertex *Graph::availableVertex(){
     return availableVertex(0);
 }
@@ -53,7 +49,7 @@ Vertex *Graph::availableVertex(int start){
 bool Graph::insertEdge(int from, int to){
     if(from == to) return false;
 
-    Vertex *v_from = list+from, *v_to = list+to;
+    Vertex *v_from = &this->list[from], *v_to = &this->list[to];
 
     while(v_from->neighbor != 0){
         v_from = v_from->neighbor;
@@ -80,16 +76,43 @@ bool Graph::insertEdge(int from, int to, int weight){
     return some&false;
 }
 
-void Graph::colorize(Vertex *vertex){
-    if(vertex->color == BLACK) return;
-    vertex->color = BLACK;
-    if(vertex->neighbor != 0){
-        vertex->neighbor->color = BLACK;
-        colorize(&this->list[vertex->neighbor->key]);
-    }
+vector<Vertex*>* Graph::colorize(Vertex *vertex){
+    return colorize(vertex, 0);
 }
 
-void Graph::connectAll(int startFind, Vertex *vertex, Vertex *toConnect){
+//It Colorizes a subgraph with black and return a list of all vertex involved on this graph
+vector<Vertex*>* Graph::colorize(Vertex *vertex, vector<Vertex*>* list){
+    list = list != 0 ? list : new vector<Vertex*>;
+
+    if(vertex->color == BLACK) return list;
+
+    vertex->color = BLACK;
+    list->push_back(vertex);
+
+    while(vertex->neighbor != 0){
+        vertex = vertex->neighbor;
+        vertex->color = BLACK;
+        colorize(&this->list[vertex->key], list);
+    }
+
+    return list;
+}
+
+void Graph::getSubGraphsList(int start=0, sgfh *flow=0){
+    flow = flow == 0 ? new sgfh : flow;
+    flow->lastVertex = availableVertex(start);
+
+    for (int i = 0; i < flow->lastGraph->size(); i++) {
+        if(flow->lastGraph->at(i)->key == flow->lastVertex->key){
+            flow->lastVertex = flow->lastGraph->at(i);
+        }
+    }
+    flow->lastGraph = colorize(flow->lastVertex);
+
+    getSubGraphsList(flow->lastVertex->key);
+}
+
+void Graph::connectAll(int startFind, Vertex *vertex, Vertex *toConnect, vector<int>* stack){
     startFind = 0;
     vertex = 0;
     toConnect = 0;
@@ -97,5 +120,5 @@ void Graph::connectAll(int startFind, Vertex *vertex, Vertex *toConnect){
 }
 
 Vertex* Graph::test(){
-    return &this->list[1];
+    return &this->list[0];
 }

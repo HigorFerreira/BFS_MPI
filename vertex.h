@@ -9,6 +9,7 @@
 
 class Vertex
 {
+    void defaultConstructor(int, Vertex*);
 public:
     int key;
     int color;
