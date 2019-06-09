@@ -38,9 +38,24 @@ Vertex *Graph::availableVertex(){
 }
 
 Vertex *Graph::availableVertex(int start){
+    availableVertex(start, true);
+}
+
+Vertex *Graph::availableVertexWithoutBlack(int start){
+    availableVertex(start, false);
+}
+
+Vertex *Graph::availableVertex(int start, bool withBlack){
     Vertex *v_start = list + start;
-    if(v_start->neighbor == 0 && start < VERTEX_QTT){
-        v_start = availableVertex(++start);
+    if(withBlack){
+        if(v_start->neighbor == 0 && start < VERTEX_QTT){
+            v_start = availableVertex(++start);
+        }
+    }
+    else {
+        if((v_start->neighbor == 0 || v_start->color == BLACK) && start < VERTEX_QTT){
+            v_start = availableVertex(++start, false);
+        }
     }
 
     return start < VERTEX_QTT ? v_start : 0;
@@ -99,17 +114,24 @@ vector<Vertex*>* Graph::colorize(Vertex *vertex, vector<Vertex*>* list){
 }
 
 void Graph::getSubGraphsList(int start=0, sgfh *flow=0){
-    flow = flow == 0 ? new sgfh : flow;
-    flow->lastVertex = availableVertex(start);
+//    flow = flow == 0 ? new sgfh : flow;
+//    flow->lastVertex = availableVertex(start);
 
-    for (int i = 0; i < flow->lastGraph->size(); i++) {
-        if(flow->lastGraph->at(i)->key == flow->lastVertex->key){
-            flow->lastVertex = flow->lastGraph->at(i);
-        }
+//    for (int i = 0; i < flow->lastGraph->size(); i++) {
+//        if(flow->lastGraph->at(i)->key == flow->lastVertex->key){
+//            flow->lastVertex = flow->lastGraph->at(i);
+//        }
+//    }
+//    flow->lastGraph = colorize(flow->lastVertex);
+
+//    getSubGraphsList(flow->lastVertex->key);
+    Vertex* next = availableVertexWithoutBlack(start);
+//    if(next->color != BLACK && next != 0){
+    if(next != 0){
+        vector<Vertex*>* sub = colorize(next);
+        this->subGraphs.push_back(sub);
+        getSubGraphsList(next->key+1);
     }
-    flow->lastGraph = colorize(flow->lastVertex);
-
-    getSubGraphsList(flow->lastVertex->key);
 }
 
 void Graph::connectAll(int startFind, Vertex *vertex, Vertex *toConnect, vector<int>* stack){

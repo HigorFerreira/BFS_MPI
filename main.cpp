@@ -9,6 +9,7 @@ int main()
     g->insertEdge(3, 1);
     g->insertEdge(2, 0);
     g->insertEdge(4, 5);
+    g->getSubGraphsList(0, 0);
     vector<Vertex*>* subGraph = g->colorize(g->test());
     int i = 2;
 }

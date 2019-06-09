@@ -26,12 +26,15 @@ public:
     Vertex *list;
     vector<vector<Vertex*>*> subGraphs;
     void defaultConstructor(bool, int);
+
+    Vertex *availableVertex(int, bool);
 public:
     Graph();
     Graph(int);
     int randd();
     Vertex *availableVertex();
     Vertex *availableVertex(int);
+    Vertex *availableVertexWithoutBlack(int);
     bool insertEdge(int, int);
     bool insertEdge(int, int, int);
     vector<Vertex*>* colorize(Vertex*);
