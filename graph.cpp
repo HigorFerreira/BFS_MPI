@@ -147,9 +147,14 @@ void Graph::connectAll(){
         int from = rand() % GraphA->size();
         int to = rand() % GraphB->size();
 
+        from = GraphA->at(from)->key;
+        to = GraphB->at(to)->key;
+
         this->insertEdge(from, to);
     }
 
+    delete this->subGraphs;
+    subGraphs = new vector<vector<Vertex*>*>;
 }
 
 Vertex* Graph::test(){
