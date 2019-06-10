@@ -24,7 +24,7 @@ class Graph
 public:
     int VERTEX_QTT;
     Vertex *list;
-    vector<vector<Vertex*>*> subGraphs;
+    vector<vector<Vertex*>*>* subGraphs = new vector<vector<Vertex*>*>;
     void defaultConstructor(bool, int);
 
     Vertex *availableVertex(int, bool);

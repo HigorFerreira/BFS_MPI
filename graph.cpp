@@ -129,7 +129,7 @@ void Graph::getSubGraphsList(int start=0){
 //    if(next->color != BLACK && next != 0){
     if(next != 0){
         vector<Vertex*>* sub = colorize(next);
-        this->subGraphs.push_back(sub);
+        this->subGraphs->push_back(sub);
         getSubGraphsList(next->key+1);
     }
 }
@@ -140,9 +140,9 @@ void Graph::connectAll(){
 
     this->whitise();
 
-    for (int i=1; i<this->subGraphs.size(); i++) {
-        vector<Vertex*>* GraphA = this->subGraphs.at(i-1);
-        vector<Vertex*>* GraphB = this->subGraphs.at(i);
+    for (int i=1; i<this->subGraphs->size(); i++) {
+        vector<Vertex*>* GraphA = this->subGraphs->at(i-1);
+        vector<Vertex*>* GraphB = this->subGraphs->at(i);
 
         int from = rand() % GraphA->size();
         int to = rand() % GraphB->size();
