@@ -39,9 +39,11 @@ public:
     bool insertEdge(int, int, int);
     vector<Vertex*>* colorize(Vertex*);
     vector<Vertex*>* colorize(Vertex*, vector<Vertex*>*);
-    void getSubGraphsList(int, sgfh*);
-    void connectAll(int, Vertex*, Vertex*, vector<int>*);
+    void getSubGraphsList(int);
+    void connectAll();
+
     void whitise();
+    void whitise(int);
 
     Vertex* test();
 };

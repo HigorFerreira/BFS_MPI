@@ -113,7 +113,7 @@ vector<Vertex*>* Graph::colorize(Vertex *vertex, vector<Vertex*>* list){
     return list;
 }
 
-void Graph::getSubGraphsList(int start=0, sgfh *flow=0){
+void Graph::getSubGraphsList(int start=0){
 //    flow = flow == 0 ? new sgfh : flow;
 //    flow->lastVertex = availableVertex(start);
 
@@ -134,13 +134,40 @@ void Graph::getSubGraphsList(int start=0, sgfh *flow=0){
     }
 }
 
-void Graph::connectAll(int startFind, Vertex *vertex, Vertex *toConnect, vector<int>* stack){
-    startFind = 0;
-    vertex = 0;
-    toConnect = 0;
-    return;
+void Graph::connectAll(){
+
+    this->getSubGraphsList(0);
+
+    this->whitise();
+
+    for (int i=1; i<this->subGraphs.size(); i++) {
+        vector<Vertex*>* GraphA = this->subGraphs.at(i-1);
+        vector<Vertex*>* GraphB = this->subGraphs.at(i);
+
+        int from = rand() % GraphA->size();
+        int to = rand() % GraphB->size();
+
+        this->insertEdge(from, to);
+    }
+
 }
 
 Vertex* Graph::test(){
     return &this->list[0];
+}
+
+void Graph::whitise(){
+    for (int i = 0; i < VERTEX_QTT; i++) {
+        whitise(i);
+    }
+}
+
+void Graph::whitise(int vertex){
+    this->list[vertex].color = WHITE;
+
+    Vertex *next = this->list[vertex].neighbor;
+    while(next != 0){
+        next->color = WHITE;
+        next = next->neighbor;
+    }
 }
