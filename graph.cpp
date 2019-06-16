@@ -10,7 +10,7 @@ Graph::Graph(int qtt){
 
 void Graph::defaultConstructor(bool isRandomic, int qtt){
 
-    srand(time(NULL));
+//    srand(time(NULL));
 
     this->VERTEX_QTT = qtt < 1 ? 65000 : qtt;
 
@@ -22,15 +22,24 @@ void Graph::defaultConstructor(bool isRandomic, int qtt){
     }
 
     if(isRandomic){
-        for(int i = 0; i < VERTEX_QTT; i++){
+        for(int i = 0; i < 5000; i++){
             int from = randd(), to = randd();
             insertEdge(from, to);
         }
     }
 }
 
-int Graph::randd(){
-    return rand() % VERTEX_QTT;
+//int Graph::randd(){
+//    return rand() % VERTEX_QTT;
+//}
+
+int Graph::randd()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    srand ((time_t )ts.tv_nsec);
+    int rd = rand()%VERTEX_QTT;
+    return rd;
 }
 
 Vertex *Graph::availableVertex(){
@@ -159,6 +168,35 @@ void Graph::connectAll(){
 
 Vertex* Graph::test(){
     return &this->list[0];
+}
+
+int* Graph::getWeight(int from, int to){
+    if(from == to) return 0;
+
+    Vertex* aux = &this->list[from];
+    while(aux != 0 && aux->key != to){
+        aux = aux->neighbor;
+    }
+
+    return (int*)aux == 0 ? 0 : new int(aux->edgeWeight);
+}
+
+int* Graph::setWeight(int from, int to, int weight, bool first){
+    if(from == to) return 0;
+
+    Vertex* aux = &this->list[from];
+    while(aux != 0 && aux->key != to){
+        aux = aux->neighbor;
+    }
+
+    if(aux == 0) return 0;
+
+    aux->edgeWeight = weight;
+
+    if(first)
+    if(setWeight(to, from, weight, false) == 0) return 0;
+
+    return new int;
 }
 
 void Graph::whitise(){

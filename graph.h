@@ -42,6 +42,9 @@ public:
     void getSubGraphsList(int);
     void connectAll();
 
+    int* getWeight(int from, int to);
+    int* setWeight(int from, int to, int weight, bool first=true);
+
     void whitise();
     void whitise(int);
 
