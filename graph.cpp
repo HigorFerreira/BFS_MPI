@@ -70,7 +70,7 @@ Vertex *Graph::availableVertex(int start, bool withBlack){
     return start < VERTEX_QTT ? v_start : 0;
 }
 
-bool Graph::insertEdge(int from, int to){
+bool Graph::insertEdge(int from, int to, int weight){
     if(from == to) return false;
 
     Vertex *v_from = &this->list[from], *v_to = &this->list[to];
@@ -88,16 +88,14 @@ bool Graph::insertEdge(int from, int to){
         }
     }
 
-    v_from->neighbor = new Vertex(to);
-    v_to->neighbor = new Vertex(from);
+    v_from->neighbor = new Vertex(to, weight);
+    v_to->neighbor = new Vertex(from, weight);
 
     return true;
 }
 
-bool Graph::insertEdge(int from, int to, int weight){
-    //Desabling QT warnnings
-    int some = from*to*weight;
-    return some&false;
+bool Graph::insertEdge(int from, int to){
+    insertEdge(from, to, 100);
 }
 
 vector<Vertex*>* Graph::colorize(Vertex *vertex){
@@ -213,4 +211,94 @@ void Graph::whitise(int vertex){
         next->color = WHITE;
         next = next->neighbor;
     }
+}
+
+
+void Graph::initBF(int s){
+    for (int i = 0; i < VERTEX_QTT; i++) {
+        this->list[i].vertexWeight = INFTY;
+    }
+    this->list[s].vertexWeight = 0;
+}
+
+void Graph::relax(int u, int v, w *w){
+    if(this->list[v].vertexWeight > this->list[u].vertexWeight + w->edgeWeight){
+        this->list[v].edgeWeight = (int)this->list[u].edgeWeight + w->edgeWeight;
+    }
+    this->list[v].predecessor = &this->list[u];
+}
+
+bool Graph::bellmanFord(int s){
+    initBF(s);
+
+    for (int i = 1; i < VERTEX_QTT; i++) {
+        for (int j = 0; j < VERTEX_QTT; j++) {
+            Vertex *aux_vertex = this->list[j].neighbor;
+            while (!aux_vertex) {
+
+                edge *w = new edge;
+                w->edgeWeight = aux_vertex->edgeWeight;
+                w->u = &this->list[j];
+                w->v = &this->list[aux_vertex->key];
+
+                relax(w->u->key, w->v->key, w);
+
+                delete w;
+
+                aux_vertex = aux_vertex->neighbor;
+            }
+        }
+    }
+
+    for (int j = 0; j < VERTEX_QTT; j++) {
+        Vertex *aux_vertex = this->list[j].neighbor;
+        while (!aux_vertex) {
+
+            edge *w = new edge;
+            w->edgeWeight = aux_vertex->edgeWeight;
+            w->u = &this->list[j];
+            w->v = &this->list[aux_vertex->key];
+
+            if(this->list[w->v->key].edgeWeight > this->list[w->u->key].edgeWeight + w->edgeWeight){
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+shortWayResponse *Graph::shortWay(int u, int v){
+
+    shortWayResponse *ret = new shortWayResponse;
+    ret->cost = 0;
+    vector<int> *path = new vector<int>;
+
+    bellmanFord(u);
+
+    Vertex *at = &this->list[v];
+    while(!at){
+        path->push_back(at->key);
+        ret->cost += at->vertexWeight;
+        at = &this->list[at->predecessor->key];
+    }
+
+    vector<int> *aux = new vector<int>;
+    for (int i = 0; i < path->size(); i++) {
+        aux->push_back(path->at(path->size()-1));
+        path->pop_back();
+    }
+
+    delete path;
+    path = aux;
+
+    //Decrement way
+
+    //Cleanning
+    for (int i = 0; i < VERTEX_QTT; i++) {
+        this->list[i].vertexWeight = UNDEFINED;
+        this->list[i].predecessor = 0;
+    }
+
+    return ret;
 }

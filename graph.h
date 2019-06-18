@@ -14,10 +14,23 @@ using namespace std;
 
 //Helper for organize structures to getSubGraphsList flow
 //SGFH ---> Sub Graph Flow Helper
-struct sgfh {
-    Vertex* lastVertex;
-    vector<Vertex*>* lastGraph;
+//struct sgfh {
+//    Vertex* lastVertex;
+//    vector<Vertex*>* lastGraph;
+//};
+
+struct edge{
+    Vertex *u;
+    Vertex *v;
+    int edgeWeight;
 };
+
+struct shortWayResponse{
+    vector<int> *path;
+    int cost;
+};
+
+typedef edge w;
 
 class Graph
 {
@@ -35,8 +48,8 @@ public:
     Vertex *availableVertex();
     Vertex *availableVertex(int);
     Vertex *availableVertexWithoutBlack(int);
-    bool insertEdge(int, int);
     bool insertEdge(int, int, int);
+     bool insertEdge(int, int);
     vector<Vertex*>* colorize(Vertex*);
     vector<Vertex*>* colorize(Vertex*, vector<Vertex*>*);
     void getSubGraphsList(int);
@@ -47,6 +60,14 @@ public:
 
     void whitise();
     void whitise(int);
+
+private:
+    void initBF(int);
+    void relax(int, int, w*);
+    bool bellmanFord(int);
+
+public:
+    shortWayResponse *shortWay(int, int);
 
     Vertex* test();
 };
