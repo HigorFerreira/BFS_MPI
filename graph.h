@@ -28,6 +28,8 @@ struct edge{
 struct shortWayResponse{
     vector<int> *path;
     int cost;
+    bool sucess = false;
+    string message;
 };
 
 typedef edge w;
@@ -39,6 +41,8 @@ public:
     Vertex *list;
     vector<vector<Vertex*>*>* subGraphs = new vector<vector<Vertex*>*>;
     void defaultConstructor(bool, int);
+
+    vector<Vertex*> *aux;
 
     Vertex *availableVertex(int, bool);
 public:

@@ -223,9 +223,9 @@ void Graph::initBF(int s){
 
 void Graph::relax(int u, int v, w *w){
     if(this->list[v].vertexWeight > this->list[u].vertexWeight + w->edgeWeight){
-        this->list[v].edgeWeight = (int)this->list[u].edgeWeight + w->edgeWeight;
+        this->list[v].vertexWeight = (int)this->list[u].vertexWeight + w->edgeWeight;
+        this->list[v].predecessor = &this->list[u];
     }
-    this->list[v].predecessor = &this->list[u];
 }
 
 bool Graph::bellmanFord(int s){
@@ -234,7 +234,7 @@ bool Graph::bellmanFord(int s){
     for (int i = 1; i < VERTEX_QTT; i++) {
         for (int j = 0; j < VERTEX_QTT; j++) {
             Vertex *aux_vertex = this->list[j].neighbor;
-            while (!aux_vertex) {
+            while (aux_vertex) {
 
                 edge *w = new edge;
                 w->edgeWeight = aux_vertex->edgeWeight;
@@ -252,7 +252,7 @@ bool Graph::bellmanFord(int s){
 
     for (int j = 0; j < VERTEX_QTT; j++) {
         Vertex *aux_vertex = this->list[j].neighbor;
-        while (!aux_vertex) {
+        while (aux_vertex) {
 
             edge *w = new edge;
             w->edgeWeight = aux_vertex->edgeWeight;
@@ -260,8 +260,10 @@ bool Graph::bellmanFord(int s){
             w->v = &this->list[aux_vertex->key];
 
             if(this->list[w->v->key].edgeWeight > this->list[w->u->key].edgeWeight + w->edgeWeight){
-                return false;
+                return false; //Vai acontecer relaxaento
             }
+
+            aux_vertex = aux_vertex->neighbor;
         }
     }
 
@@ -272,33 +274,56 @@ shortWayResponse *Graph::shortWay(int u, int v){
 
     shortWayResponse *ret = new shortWayResponse;
     ret->cost = 0;
+
+    if(this->list[u].neighbor == 0 || this->list[v].neighbor == 0){
+        ret->message = "Some one of the vertexes isn't valid";
+        return ret;
+    }
+
+
     vector<int> *path = new vector<int>;
 
+    //Bellman ford está errado
     bellmanFord(u);
 
     Vertex *at = &this->list[v];
-    while(!at){
+    ret->cost += at->vertexWeight;
+    while(at){ //Esta condição não serve
         path->push_back(at->key);
-        ret->cost += at->vertexWeight;
-        at = &this->list[at->predecessor->key];
+        at = at->predecessor ? &this->list[at->predecessor->key] : 0;
+
+        if(path->size() > 3*this->VERTEX_QTT){
+            ret->message = "Algoritm error";
+            ret->cost = 0;
+            return ret;
+        }
     }
 
     vector<int> *aux = new vector<int>;
-    for (int i = 0; i < path->size(); i++) {
+    while(path->size() != 0){
         aux->push_back(path->at(path->size()-1));
         path->pop_back();
     }
 
     delete path;
-    path = aux;
+    ret->path = aux;
 
     //Decrement way
+    for (int i = 0; i < aux->size()-1; i++) {
+        int u = aux->at(i);
+        int v = aux->at(i+1);
+        int *size = this->getWeight(u, v);
+        this->setWeight(u, v, *size-1);
+        delete size;
+    }
 
     //Cleanning
     for (int i = 0; i < VERTEX_QTT; i++) {
         this->list[i].vertexWeight = UNDEFINED;
         this->list[i].predecessor = 0;
     }
+
+    ret->sucess = true;
 
     return ret;
 }
