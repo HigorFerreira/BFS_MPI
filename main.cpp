@@ -5,9 +5,9 @@ int main()
 {
     Graph *g = new Graph(3);
 
-    g->insertEdge(0, 1, -1);
+    g->insertEdge(0, 1, -4);
     g->insertEdge(1, 2, 2);
-    g->insertEdge(2, 0, 4);
+    g->insertEdge(2, 0, -1);
 
     vector<Vertex*> graph;
     g->aux = &graph;

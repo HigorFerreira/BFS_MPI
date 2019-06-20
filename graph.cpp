@@ -260,8 +260,8 @@ bool Graph::bellmanFord(int s){
             w->v = &this->list[aux_vertex->key];
 
             if(this->list[w->v->key].edgeWeight > this->list[w->u->key].edgeWeight + w->edgeWeight){
-                relax(w->u->key, w->v->key, w);
-                //return false; //Vai acontecer relaxaento
+                //relax(w->u->key, w->v->key, w);
+                return false; //Vai acontecer relaxaento
             }
 
             aux_vertex = aux_vertex->neighbor;
