@@ -260,7 +260,8 @@ bool Graph::bellmanFord(int s){
             w->v = &this->list[aux_vertex->key];
 
             if(this->list[w->v->key].edgeWeight > this->list[w->u->key].edgeWeight + w->edgeWeight){
-                return false; //Vai acontecer relaxaento
+                relax(w->u->key, w->v->key, w);
+                //return false; //Vai acontecer relaxaento
             }
 
             aux_vertex = aux_vertex->neighbor;
@@ -286,9 +287,9 @@ shortWayResponse *Graph::shortWay(int u, int v){
     //Bellman ford está errado
     bellmanFord(u);
 
-    Vertex *at = &this->list[v];
-    ret->cost += at->vertexWeight;
-    while(at){ //Esta condição não serve
+    Vertex *at = &this->list[v], *s = &this->list[u];
+    //ret->cost += at->vertexWeight;
+    while(at != s){ //Esta condição não serve
         path->push_back(at->key);
         at = at->predecessor ? &this->list[at->predecessor->key] : 0;
 
@@ -299,6 +300,8 @@ shortWayResponse *Graph::shortWay(int u, int v){
         }
     }
 
+    path->push_back(at->key);
+
     vector<int> *aux = new vector<int>;
     while(path->size() != 0){
         aux->push_back(path->at(path->size()-1));
@@ -307,6 +310,13 @@ shortWayResponse *Graph::shortWay(int u, int v){
 
     delete path;
     ret->path = aux;
+
+    //Calculating cost
+    for (int i = 0; i < aux->size()-1; i++) {
+        int u = aux->at(i);
+        int v = aux->at(i+1);
+        ret->cost += *(this->getWeight(u, v));
+    }
 
     //Decrement way
     for (int i = 0; i < aux->size()-1; i++) {

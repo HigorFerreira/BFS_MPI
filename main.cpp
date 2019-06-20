@@ -7,7 +7,7 @@ int main()
 
     g->insertEdge(0, 1, -1);
     g->insertEdge(1, 2, 2);
-    g->insertEdge(2, 0, 3);
+    g->insertEdge(2, 0, 4);
 
     vector<Vertex*> graph;
     g->aux = &graph;
