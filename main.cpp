@@ -15,7 +15,7 @@ int main()
         graph.push_back(&g->list[i]);
     }
 
-    shortWayResponse *way1 = g->shortWay(0, 2);
+    shortWayResponse *way1 = g->shortWay(2, 0);
 
     int i = 0;
 }

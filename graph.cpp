@@ -294,21 +294,38 @@ shortWayResponse *Graph::shortWay(int u, int v){
         at = at->predecessor ? &this->list[at->predecessor->key] : 0;
 
         if(path->size() > 3*this->VERTEX_QTT){
-            ret->message = "Algoritm error";
-            ret->cost = 0;
-            return ret;
+            at = &this->list[u], s = &this->list[v];
+            delete path;
+            path = new vector<int>;
+            //ret->cost += at->vertexWeight;
+            while(at != s){ //Esta condição não serve
+                path->push_back(at->key);
+                at = at->predecessor ? &this->list[at->predecessor->key] : 0;
+
+                if(path->size() > 3*this->VERTEX_QTT){
+                    ret->message = "Algoritm error";
+                    ret->cost = 0;
+                    return ret;
+                }
+            }
+            break;
         }
     }
 
     path->push_back(at->key);
 
     vector<int> *aux = new vector<int>;
-    while(path->size() != 0){
-        aux->push_back(path->at(path->size()-1));
-        path->pop_back();
+    if(s == &this->list[u]){
+        while(path->size() != 0){
+            aux->push_back(path->at(path->size()-1));
+            path->pop_back();
+        }
+        delete path;
+    }
+    else {
+        aux = path;
     }
 
-    delete path;
     ret->path = aux;
 
     //Calculating cost
