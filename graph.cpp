@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <cmath>
 
 Graph::Graph(){
     defaultConstructor(true, 0);
@@ -213,6 +214,47 @@ void Graph::whitise(int vertex){
     }
 }
 
+
+void *Graph::serialize(){
+    if(this->VERTEX_QTT > 0xffff) return 0;
+
+    char *buffer = new char[0x1BFFF];
+    char *bufferPointer = buffer;
+
+    //Reserving 4Bytes to the buffer total size
+    bufferPointer += 4;
+
+    *(unsigned short*)bufferPointer = this->VERTEX_QTT;
+    bufferPointer += 2;
+
+    for (unsigned short i = 0; i < this->VERTEX_QTT; i++) {
+        short acumulator = 0;
+        Vertex *aux = this->list[i].neighbor;
+        Vertex *aux1 = aux;
+        char *vertexAffected = bufferPointer;
+        char *listSize = bufferPointer+2;
+        char *list = bufferPointer+4;
+
+        while(aux){
+            *(int*)list = aux->key;
+            list += 4;
+            acumulator++;
+
+            aux = aux->neighbor;
+        }
+
+        if(aux1){
+            *(unsigned short*)vertexAffected = i;
+            *(unsigned short*)listSize = acumulator;
+            bufferPointer = list;
+        }
+    }
+
+    //Assing buffer total size
+    *(int *)buffer = bufferPointer-buffer;
+
+    return (void*)buffer;
+}
 
 void Graph::initBF(int s){
     for (int i = 0; i < VERTEX_QTT; i++) {

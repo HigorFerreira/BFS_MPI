@@ -36,7 +36,7 @@ typedef edge w;
 
 class Graph
 {
-public:
+private:
     int VERTEX_QTT;
     Vertex *list;
     vector<vector<Vertex*>*>* subGraphs = new vector<vector<Vertex*>*>;
@@ -64,6 +64,8 @@ public:
 
     void whitise();
     void whitise(int);
+
+    void *serialize();
 
 private:
     void initBF(int);
