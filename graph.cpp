@@ -256,6 +256,101 @@ void *Graph::serialize(){
     return (void*)buffer;
 }
 
+void *Graph::mountGraph(void *data){
+    char *buffer = (char*)data;
+    char *bufferPointer = buffer;
+
+    int bufferSize = *(int*)bufferPointer;
+    bufferPointer += 4;
+    int vertexesQtt = *(unsigned short*)bufferPointer;
+    bufferPointer += 2;
+
+    //Mounting buffer for adjacency list
+    this->VERTEX_QTT = vertexesQtt;
+    this->list = new Vertex[this->VERTEX_QTT];
+
+    //Setting vertex keys
+    for (int i = 0; i<VERTEX_QTT; i++) {
+        this->list[i].key = i;
+    }
+
+    int i = 0;
+    while (bufferPointer-buffer <= bufferSize) {
+        int vertex = *(unsigned short*)bufferPointer;
+        int vertexesQtt = *(unsigned short*)bufferPointer;
+
+        if(vertex == i){
+            bufferPointer += 4;
+
+            Vertex *start = new Vertex(*(int*)bufferPointer);
+            Vertex *aux = start;
+            bufferPointer += 4;
+
+            for (int i = 1; i < vertexesQtt; i++) {
+                Vertex *aux2 = new Vertex(*(int*)bufferPointer);
+                bufferPointer += 4;
+
+                aux->neighbor = aux2;
+                aux = aux2;
+            }
+
+            this->list[i].neighbor = start;
+        }
+
+        //..........
+        i++;
+    }
+
+}
+
+void *Graph::serializeFrom(int vertex){
+    char *buffer = new char[0xfffff];
+    char *bufferPointer = buffer;
+
+    //Identifier VF = VertexFrom
+    bufferPointer = "VF";
+    bufferPointer += 2;
+
+    //Reserve 4Bytes for list size
+    int *bufferSize = (int*)bufferPointer;
+    bufferPointer += 4;
+
+    //Assign vertex attached to list
+    *(unsigned short*)bufferPointer = (unsigned short)vertex;
+    bufferPointer += 2;
+
+    Vertex *aux = this->list[vertex].neighbor;
+
+    if(!aux){
+        bufferSize = 0;
+        delete bufferPointer;
+        return buffer;
+    }
+
+    //Reserve 2Bytes for list size
+    unsigned short *listSize = (unsigned short*)bufferPointer;
+    bufferPointer += 2;
+
+    int headerSize = bufferPointer - buffer;
+
+    //Serializing vertexes
+    while(aux){
+
+        *(unsigned short*)bufferPointer = (unsigned short)aux->key;
+        bufferPointer += 2;
+        *(int*)bufferPointer = (int)aux->edgeWeight;
+        bufferPointer += 4;
+
+        //......
+        aux = aux->neighbor;
+    }
+
+    *bufferSize = bufferPointer - buffer;
+    *listSize = (bufferPointer - buffer) - headerSize;
+
+    return buffer;
+}
+
 void Graph::initBF(int s){
     for (int i = 0; i < VERTEX_QTT; i++) {
         this->list[i].vertexWeight = INFTY;

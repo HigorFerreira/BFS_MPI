@@ -66,6 +66,9 @@ public:
     void whitise(int);
 
     void *serialize();
+    void *mountGraph(void *data);
+
+    void *serializeFrom(int vertex);
 
 private:
     void initBF(int);
