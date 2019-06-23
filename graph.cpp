@@ -48,11 +48,11 @@ Vertex *Graph::availableVertex(){
 }
 
 Vertex *Graph::availableVertex(int start){
-    availableVertex(start, true);
+    return availableVertex(start, true);
 }
 
 Vertex *Graph::availableVertexWithoutBlack(int start){
-    availableVertex(start, false);
+    return availableVertex(start, false);
 }
 
 Vertex *Graph::availableVertex(int start, bool withBlack){
