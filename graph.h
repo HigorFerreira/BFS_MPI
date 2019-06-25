@@ -42,8 +42,6 @@ private:
     vector<vector<Vertex*>*>* subGraphs = new vector<vector<Vertex*>*>;
     void defaultConstructor(bool, int);
 
-    vector<Vertex*> *aux;
-
     Vertex *availableVertex(int, bool);
 public:
     Graph();

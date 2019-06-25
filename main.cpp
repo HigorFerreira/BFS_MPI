@@ -160,8 +160,9 @@ int main()
         Graph *g = new Graph(1);
         void *data = 0;
 
+        bool condition = true;
         //Waiting for Graph
-        while (true) {
+        while (condition) {
 
             //Receive Graph from commander
             MPI_Recv(data, 0x1BFFF, MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -169,7 +170,7 @@ int main()
             if(data){
                 g->mountGraph(data);
                 delete data;
-                break;
+                condition = false;
             }
         }
 
