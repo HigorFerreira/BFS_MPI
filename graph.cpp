@@ -11,8 +11,6 @@ Graph::Graph(int qtt){
 
 void Graph::defaultConstructor(bool isRandomic, int qtt){
 
-//    srand(time(NULL));
-
     this->VERTEX_QTT = qtt < 1 ? 65000 : qtt;
 
     this->list = new Vertex[this->VERTEX_QTT];
@@ -29,10 +27,6 @@ void Graph::defaultConstructor(bool isRandomic, int qtt){
         }
     }
 }
-
-//int Graph::randd(){
-//    return rand() % VERTEX_QTT;
-//}
 
 int Graph::randd()
 {
@@ -122,19 +116,7 @@ vector<Vertex*>* Graph::colorize(Vertex *vertex, vector<Vertex*>* list){
 }
 
 void Graph::getSubGraphsList(int start=0){
-//    flow = flow == 0 ? new sgfh : flow;
-//    flow->lastVertex = availableVertex(start);
-
-//    for (int i = 0; i < flow->lastGraph->size(); i++) {
-//        if(flow->lastGraph->at(i)->key == flow->lastVertex->key){
-//            flow->lastVertex = flow->lastGraph->at(i);
-//        }
-//    }
-//    flow->lastGraph = colorize(flow->lastVertex);
-
-//    getSubGraphsList(flow->lastVertex->key);
     Vertex* next = availableVertexWithoutBlack(start);
-//    if(next->color != BLACK && next != 0){
     if(next != 0){
         vector<Vertex*>* sub = colorize(next);
         this->subGraphs->push_back(sub);
@@ -421,12 +403,10 @@ shortWayResponse *Graph::shortWay(int u, int v){
 
     vector<int> *path = new vector<int>;
 
-    //Bellman ford está errado
     bellmanFord(u);
 
     Vertex *at = &this->list[v], *s = &this->list[u];
-    //ret->cost += at->vertexWeight;
-    while(at != s){ //Esta condição não serve
+    while(at != s){
         path->push_back(at->key);
         at = at->predecessor ? &this->list[at->predecessor->key] : 0;
 
@@ -434,8 +414,7 @@ shortWayResponse *Graph::shortWay(int u, int v){
             at = &this->list[u], s = &this->list[v];
             delete path;
             path = new vector<int>;
-            //ret->cost += at->vertexWeight;
-            while(at != s){ //Esta condição não serve
+            while(at != s){
                 path->push_back(at->key);
                 at = at->predecessor ? &this->list[at->predecessor->key] : 0;
 
